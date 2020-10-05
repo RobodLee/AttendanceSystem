@@ -7,6 +7,26 @@ package com.robod.attendancesystem.entity;
 public class Constants {
 
     /**
+     * SharedPreferences中签到时间下标对应的键名称
+     */
+    public static final String SIGN_IN_TIME_KEY = "SING_IN_TIME_KEY";
+
+    /**
+     * SharedPreferences中签退时间下标对应的键名称
+     */
+    public static final String SIGN_OUT_TIME_KEY = "SING_OUT_TIME_KEY";
+
+    /**
+     * SharedPreferences中管理员密码对应的键名称
+     */
+    public static final String ADMIN_PASSWORD_KEY = "ADMIN_PASSWORD_KEY";
+
+    /**
+     * 用于保存设置信息的SharedPreferences文件的名称
+     */
+    public static final String SETTING_INFO = "SETTING_INFO";
+
+    /**
      * 人脸注册
      */
     public static final String FACE_REGISTER_URL = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/add";

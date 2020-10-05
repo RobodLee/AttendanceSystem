@@ -1,4 +1,4 @@
-package com.robod.attendancesystem.frament;
+package com.robod.attendancesystem.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

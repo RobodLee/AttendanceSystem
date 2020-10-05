@@ -33,6 +33,7 @@
     -->
     <list>
         <mapping class="com.robod.attendancesystem.entity.Student"></mapping>
+        <mapping class="com.robod.attendancesystem.entity.Record"></mapping>
     </list>
 
     <!--
