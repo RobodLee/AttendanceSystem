@@ -154,11 +154,11 @@ public class SignInOutFragment extends Fragment {
                             @SuppressLint("SimpleDateFormat")
                             SimpleDateFormat sdf = new SimpleDateFormat();
                             Calendar calendar = Calendar.getInstance();
+                            List<Record> records = LitePal.where("student_num = ? and " +
+                                    "date(date_string) == date('now')", number)
+                                    .find(Record.class);
 
                             if (signInOutMode == 1) {
-                                List<Record> records = LitePal.where("student_num = ? and " +
-                                        "date(date_string) == date('now')", number)
-                                        .find(Record.class);
                                 if (records == null || records.size() == 0) {
                                     Record record = new Record();
                                     record.setStudent_name(name);
@@ -179,9 +179,6 @@ public class SignInOutFragment extends Fragment {
                                     }
                                 }
                             } else if (signInOutMode == 2) {
-                                List<Record> records = LitePal.where("student_num = ? and " +
-                                        "date(date_string) == date('now')", number)
-                                        .find(Record.class);
                                 if (records != null && records.size() > 0) {
                                     Record record = records.get(0);
                                     if ("0".equals(record.getStatus())) {
