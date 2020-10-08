@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        preferences = getSharedPreferences(Constants.SETTING_INFO,MODE_PRIVATE);
+        preferences = getSharedPreferences(Constants.SP_NAME,MODE_PRIVATE);
 
         //如果管理员密码为空则初始化管理员密码为 “123456”
         String adminPassword = preferences.getString(Constants.ADMIN_PASSWORD_KEY,"");

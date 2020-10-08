@@ -24,7 +24,7 @@ public class Constants {
     /**
      * 用于保存设置信息的SharedPreferences文件的名称
      */
-    public static final String SETTING_INFO = "SETTING_INFO";
+    public static final String SP_NAME = "SP_NAME";
 
     /**
      * 人脸注册

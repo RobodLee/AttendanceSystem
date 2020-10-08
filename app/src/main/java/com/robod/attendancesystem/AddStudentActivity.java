@@ -101,7 +101,7 @@ public class AddStudentActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     String imageBase64String = Base64Util.encode(imageFile);
                     if (TextUtils.isEmpty(imageBase64String)) {
-                        Toast.makeText(this, "数据异常", Toast.LENGTH_SHORT).show();
+                        ToastUtil.Pop("数据异常");
                     } else {
                         Map<String, String> paramMap = new HashMap<>();
                         paramMap.put("image", imageBase64String);   //图片的base64编码

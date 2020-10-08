@@ -5,7 +5,7 @@
     <color name="colorAccent">#03DAC5</color>
 
     <color name="white">#fff</color>    <!-- 白色 -->
-    <color name="back_gray">#f1f1f1</color> <!-- 背景灰-->
+    <color name="back_gray">#ececec</color> <!-- 背景灰-->
     <color name="black">#000</color>     <!-- 黑色-->
     <color name="red">#d00</color>       <!-- 红色 -->
     <color name="green">#0d0</color>     <!-- 绿色 -->

@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class Student extends LitePalSupport implements Serializable {
 
     private Integer id;         //主键
-    private String name;        //学号
+    private String name;        //姓名
     private String number;      //学号
     private String class_;      //班级
 

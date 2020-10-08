@@ -47,7 +47,7 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     private void init() {
-        preferences = getSharedPreferences(Constants.SETTING_INFO,MODE_PRIVATE);
+        preferences = getSharedPreferences(Constants.SP_NAME,MODE_PRIVATE);
 
         signInTime = preferences.getInt(Constants.SIGN_IN_TIME_KEY, 0);
         signOutTime = preferences.getInt(Constants.SIGN_OUT_TIME_KEY, 0);
