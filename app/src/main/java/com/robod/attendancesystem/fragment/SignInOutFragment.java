@@ -55,7 +55,7 @@ public class SignInOutFragment extends Fragment {
 
     private SharedPreferences preferences;
     public static final int TAKE_PHOTO = 1;
-    private int signInOutMode;   //1:签到   2:签退
+    private int signInOutMode;   //0:未开始签到/签退    1:签到   2:签退
     private File imageFile;
     private Uri imageUri;
 
@@ -96,6 +96,9 @@ public class SignInOutFragment extends Fragment {
         int signInTime = preferences.getInt(Constants.SIGN_IN_TIME_KEY, 0);
         int signOutTime = preferences.getInt(Constants.SIGN_OUT_TIME_KEY, 0);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        if (hour < signInTime - 1) {    //未开始 签到/签退
+            signInOutMode = 0;
+        }
         if (hour >= signInTime - 1 && hour < signOutTime) { //显示签到信息
             signInOutMode = 1;
             signInOutBtn.setText("签到");
@@ -208,8 +211,10 @@ public class SignInOutFragment extends Fragment {
      * 刷新展示 签到/签退 的ListView
      */
     private void refreshListView() {
-        TodayRecordsAdapter adapter = new TodayRecordsAdapter(getActivity(), R.layout.today_record_item,
-                LitePal.findAll(Student.class), signInOutMode);
-        todayRecordsLv.setAdapter(adapter);
+        if (signInOutMode != 0) {   //如果未到签到时间，则页面不显示内容，即不进行任何操作
+            TodayRecordsAdapter adapter = new TodayRecordsAdapter(getActivity(), R.layout.today_record_item,
+                    LitePal.findAll(Student.class), signInOutMode);
+            todayRecordsLv.setAdapter(adapter);
+        }
     }
 }

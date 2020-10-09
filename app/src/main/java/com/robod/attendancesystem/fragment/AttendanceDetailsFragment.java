@@ -2,16 +2,17 @@ package com.robod.attendancesystem.fragment;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.NumberPicker;
@@ -26,6 +27,7 @@ import com.robod.attendancesystem.adapter.AttendanceDetailsAdapter;
 import com.robod.attendancesystem.entity.Constants;
 import com.robod.attendancesystem.entity.Record;
 import com.robod.attendancesystem.entity.Student;
+import com.robod.attendancesystem.utils.ToastUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.litepal.LitePal;
@@ -45,7 +47,8 @@ public class AttendanceDetailsFragment extends Fragment {
 
     private TextView currentDate;   //所选择的需要展示数据的日期
     private ListView detailsLV;     //用来展示数据的ListView
-    private Dialog dialog;          //长按ListView子项弹出的对话框
+    private AlertDialog itemLongClickDialog;            //长按ListView子项弹出的对话框
+    private AlertDialog adminPasswordDialog;            //输入管理员密码的对话框
 
     private SharedPreferences preferences;
     private int mYear;
@@ -120,6 +123,9 @@ public class AttendanceDetailsFragment extends Fragment {
 
     }
 
+    /**
+     * 刷新列表
+     */
     private void refreshListView() {
         final List<Record> records = LitePal.where("date(date_string) = date(?)",
                 mYear + "-" + (mMonth < 10 ? "0" + mMonth : mMonth) + "-" + (mDay < 10 ? "0" + mDay : mDay))
@@ -151,46 +157,90 @@ public class AttendanceDetailsFragment extends Fragment {
                 dialogView.findViewById(R.id.normal_sign_in_out).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
-                        int signInTime = preferences.getInt(Constants.SIGN_IN_TIME_KEY, 0);
-                        int signOutTime = preferences.getInt(Constants.SIGN_OUT_TIME_KEY, 0);
-                        record.setSign_in_time(signInTime < 10 ? "0" + signInTime : signInTime + ":00");
-                        record.setSign_out_time(signOutTime < 10 ? "0" + signOutTime : signOutTime + ":00");
-                        record.setStatus("1");
-                        record.save();
-                        refreshListView();
+                        popPasswordDialog(record, 1);
                     }
                 });
                 dialogView.findViewById(R.id.ask_for_leave).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
-                        record.delete();    //当修改db中已存在非空数据为null时仍会保留原有值，所以先delete再重新save
-                        record.setId(0);
-                        record.setSign_in_time(null);
-                        record.setSign_out_time(null);
-                        record.setStatus("2");
-                        record.save();
-                        refreshListView();
+                        popPasswordDialog(record, 2);
                     }
                 });
                 dialogView.findViewById(R.id.not_sign_in_out).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
-                        record.delete();
-                        refreshListView();
+                        popPasswordDialog(record, 3);
                     }
                 });
-                dialog = new AlertDialog.Builder(getActivity())
+                itemLongClickDialog = new AlertDialog.Builder(getActivity())
                         .setView(dialogView)
                         .create();
-                dialog.show();
+                itemLongClickDialog.show();
                 return true;
             }
         });
     }
 
+    /**
+     * 弹出输入管理员密码的对话框并根据传入的operation进行相应的操作
+     *
+     * @param record
+     * @param operation 1.正常签到签退；2.请假；3.未签到签退
+     */
+    private void popPasswordDialog(final Record record, final int operation) {
+        itemLongClickDialog.dismiss();
+        final View view = LayoutInflater.from(getActivity()).inflate(R.layout.admin_password_dialog, null);
+        view.findViewById(R.id.dialog_yes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText passwordEt = view.findViewById(R.id.dialog_password);
+                String inputPassword = passwordEt.getText().toString();    //输入框中输入的密码
+                String adminPassword = preferences.getString(Constants.ADMIN_PASSWORD_KEY, "");             //SharePreferences中存储的密码
+                if (TextUtils.isEmpty(inputPassword)) {
+                    ToastUtil.Pop("请输入密码");
+                } else if (adminPassword.equals(inputPassword)) {
+                    switch (operation) {
+                        case 1:
+                            int signInTime = preferences.getInt(Constants.SIGN_IN_TIME_KEY, 0);
+                            int signOutTime = preferences.getInt(Constants.SIGN_OUT_TIME_KEY, 0);
+                            record.setSign_in_time((signInTime < 10 ? "0" + signInTime : signInTime) + ":00");
+                            record.setSign_out_time((signOutTime < 10 ? "0" + signOutTime : signOutTime) + ":00");
+                            record.setStatus("1");
+                            record.save();
+                            break;
+                        case 2:
+                            record.delete();    //当修改db中已存在非空数据为null时仍会保留原有值，所以先delete再重新save
+                            record.setId(0);
+                            record.setSign_in_time(null);
+                            record.setSign_out_time(null);
+                            record.setStatus("2");
+                            record.save();
+                            break;
+                        case 3:
+                            record.delete();
+                            break;
+                        default:
+                    }
+                    adminPasswordDialog.dismiss();
+                    refreshListView();
+                } else {
+                    passwordEt.setText("");
+                    ToastUtil.Pop("密码错误");
+                }
+            }
+        });
+        adminPasswordDialog = new AlertDialog.Builder(getActivity())
+                .setView(view)
+                .create();
+        adminPasswordDialog.show();
+    }
+
+    /**
+     * 将List转为Map
+     *
+     * @param records
+     * @return
+     */
     private Map<String, Record> listToMap(List<Record> records) {
         Map<String, Record> recordMap = new HashMap<>();
         for (int i = 0; i < records.size(); i++) {

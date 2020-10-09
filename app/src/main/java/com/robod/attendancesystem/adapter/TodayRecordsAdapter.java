@@ -64,7 +64,7 @@ public class TodayRecordsAdapter extends ArrayAdapter<Student> {
         if (signInOutMode == 1) {
              records = LitePal.where("student_num = ? and " +
                     "date(date_string) == date('now') and " +
-                    "status = ?",student.getNumber(),"0").find(Record.class);
+                    "status < ?",student.getNumber(),"2").find(Record.class);
             if (records != null && records.size()>0) {
                 viewHolder.statusCircle.setTextColor(Color.GREEN);
             }
