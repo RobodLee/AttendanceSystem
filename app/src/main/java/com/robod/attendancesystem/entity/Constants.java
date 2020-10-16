@@ -37,6 +37,11 @@ public class Constants {
     public static final String FACE_SEARCH_URL = "https://aip.baidubce.com/rest/2.0/face/v3/search";
 
     /**
+     * 人脸删除
+     */
+    public static final String FACE_DELETE_URL = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/delete";
+
+    /**
      * 用户列表
      */
     public static final String STUDENTS_LIST_URL = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/group/getusers";

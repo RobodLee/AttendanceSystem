@@ -129,7 +129,8 @@ public class SignInOutFragment extends Fragment {
             imageUri = Uri.fromFile(imageFile);
         }
         // 启动相机程序
-        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra("android.intent.extras.CAMERA_FACING", 1);//前置摄像头
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(intent, TAKE_PHOTO);
     }
@@ -195,6 +196,8 @@ public class SignInOutFragment extends Fragment {
                                     } else if ("2".equals(record.getStatus())) {
                                         ToastUtil.Pop(name + " 请假了,不能签退");
                                     }
+                                } else {    //未查询出记录则说明未进行签到
+                                    ToastUtil.Pop(name + " 未签到，不能签退");
                                 }
                             }
                         }
@@ -217,4 +220,67 @@ public class SignInOutFragment extends Fragment {
             todayRecordsLv.setAdapter(adapter);
         }
     }
+
+//    @Override
+//    public void onAttach(@NonNull Context context) {
+//        super.onAttach(context);
+//        Log.d(TAG, "onAttach: ");
+//    }
+//
+//    @Override
+//    public void onCreate(@Nullable Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        Log.d(TAG, "onCreate: ");
+//    }
+//
+//    @Override
+//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//        Log.d(TAG, "onActivityCreated: ");
+//    }
+
+    /**
+     * 从设置或者学生管理界面返回到SignInOutFragment中时会调用onStart方法，重新刷新列表内容
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+        init();
+    }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        Log.d(TAG, "onResume: ");
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        Log.d(TAG, "onPause: ");
+//    }
+//
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        Log.d(TAG, "onStop: ");
+//    }
+//
+//    @Override
+//    public void onDestroyView() {
+//        super.onDestroyView();
+//        Log.d(TAG, "onDestroyView: ");
+//    }
+//
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        Log.d(TAG, "onDestroy: ");
+//    }
+//
+//    @Override
+//    public void onDetach() {
+//        super.onDetach();
+//        Log.d(TAG, "onDetach: ");
+//    }
 }

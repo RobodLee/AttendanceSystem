@@ -136,4 +136,27 @@ public class BaiduFaceUtils {
         }
         return null;
     }
+
+    /**
+     * 删除指定的用户
+     * @param paramMap
+     * @return
+     */
+    public static boolean delete(Map<String, String> paramMap) {
+        paramMap.put("group_id","students");
+        String param = GsonUtils.toJson(paramMap);
+
+        String result = NetWorkUtils.baiduPost(Constants.FACE_DELETE_URL, param);
+        if (!TextUtils.isEmpty(result)) {
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                if ("SUCCESS".equals(jsonObject.getString("error_msg"))) {
+                    return true;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
 }
