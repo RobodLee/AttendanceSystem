@@ -1,8 +1,12 @@
 package com.robod.attendancesystem;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -19,6 +23,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.robod.attendancesystem.entity.Constants;
 import com.robod.attendancesystem.fragment.AttendanceDetailsFragment;
 import com.robod.attendancesystem.fragment.SignInOutFragment;
+import com.robod.attendancesystem.service.MyService;
 import com.robod.attendancesystem.utils.ToastUtil;
 
 import org.xutils.view.annotation.ContentView;
@@ -74,6 +79,22 @@ public class MainActivity extends AppCompatActivity {
             editor.putString(Constants.ADMIN_PASSWORD_KEY, adminPassword);
             editor.apply();
         }
+
+        //如果支持蓝牙而且没有打开蓝牙功能就打开蓝牙
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter != null) {
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivity(intent);
+            }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            }
+        }
+
+        startService( new Intent(this, MyService.class));
     }
 
     /**

@@ -23,12 +23,17 @@ import androidx.fragment.app.Fragment;
 import com.robod.attendancesystem.R;
 import com.robod.attendancesystem.adapter.TodayRecordsAdapter;
 import com.robod.attendancesystem.entity.Constants;
+import com.robod.attendancesystem.entity.MessageEvent;
 import com.robod.attendancesystem.entity.Record;
 import com.robod.attendancesystem.entity.Student;
 import com.robod.attendancesystem.utils.BaiduFaceUtils;
 import com.robod.attendancesystem.utils.Base64Util;
+import com.robod.attendancesystem.utils.EventBusUtil;
 import com.robod.attendancesystem.utils.ToastUtil;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
 import java.io.File;
@@ -66,14 +71,15 @@ public class SignInOutFragment extends Fragment {
         todayRecordsLv = view.findViewById(R.id.today_records_list_view);
         signInOutBtn = view.findViewById(R.id.sign_in_out_btn);
 
-        init();
+        EventBus.getDefault().register(this);   //注册事件
+        preferences = getActivity().getSharedPreferences(Constants.SP_NAME, Context.MODE_PRIVATE);
+
+        initView();
         return view;
     }
 
     //初始化界面及添加控件的点击事件
-    private void init() {
-        preferences = getActivity().getSharedPreferences(Constants.SP_NAME, Context.MODE_PRIVATE);
-
+    private void initView() {
         signInOutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,13 +104,17 @@ public class SignInOutFragment extends Fragment {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         if (hour < signInTime - 1) {    //未开始 签到/签退
             signInOutMode = 0;
+            signInOutBtn.setText("未开始");
+            signInOutBtn.setClickable(false);
         }
         if (hour >= signInTime - 1 && hour < signOutTime) { //显示签到信息
             signInOutMode = 1;
             signInOutBtn.setText("签到");
+            signInOutBtn.setClickable(true);
         } else if (hour >= signOutTime) { //显示签退信息
             signInOutMode = 2;
             signInOutBtn.setText("签退");
+            signInOutBtn.setClickable(true);
         }
         refreshListView();
     }
@@ -149,6 +159,8 @@ public class SignInOutFragment extends Fragment {
                         paramMap.put("image", imageBase64String);
                         String result = BaiduFaceUtils.search(paramMap);
                         if (TextUtils.isEmpty(result)) {
+                            EventBusUtil.post(Constants.MESSAGE_TO_SERVICE,
+                                    signInOutMode == 1 ? Constants.SIGN_IN_FAIL : Constants.SIGN_OUT_FAIL);
                             ToastUtil.Pop("~人脸认证失败~");
                         } else {
                             String[] resultArray = result.split("_");
@@ -174,6 +186,8 @@ public class SignInOutFragment extends Fragment {
                                     record.setStatus("0");
                                     record.save();
                                     ToastUtil.Pop(name + " 签到成功");
+                                    EventBusUtil.post(Constants.MESSAGE_TO_SERVICE, Constants.SIGN_IN_SUCCESS);
+                                    checkSignNum();
                                 } else {
                                     Record record = records.get(0);
                                     if ("0".equals(record.getStatus()) || "1".equals(record.getStatus())) {
@@ -191,6 +205,8 @@ public class SignInOutFragment extends Fragment {
                                         record.setStatus("1");
                                         record.save();
                                         ToastUtil.Pop(name + " 签退成功");
+                                        EventBusUtil.post(Constants.MESSAGE_TO_SERVICE, Constants.SIGN_OUT_SUCCESS);
+                                        checkSignNum();
                                     } else if ("1".equals(record.getStatus())) {
                                         ToastUtil.Pop(name + " 不能重复签退");
                                     } else if ("2".equals(record.getStatus())) {
@@ -214,10 +230,36 @@ public class SignInOutFragment extends Fragment {
      * 刷新展示 签到/签退 的ListView
      */
     private void refreshListView() {
-        if (signInOutMode != 0) {   //如果未到签到时间，则页面不显示内容，即不进行任何操作
+        if (signInOutMode != 0) {
             TodayRecordsAdapter adapter = new TodayRecordsAdapter(getActivity(), R.layout.today_record_item,
                     LitePal.findAll(Student.class), signInOutMode);
             todayRecordsLv.setAdapter(adapter);
+        } else { //如果未到签到时间，则页面不显示内容
+            todayRecordsLv.setAdapter(null);
+        }
+    }
+
+    //检查 签到/签退 的人齐了没有，齐了就通知下位机关闭蓝牙
+    private void checkSignNum() {
+        int studentNum = LitePal.findAll(Student.class).size();
+        int recordNum = 0;
+        if (signInOutMode == 1) {
+            //status=0,1 是签到了，2是请假了，没签到则没数据，所以只要判断今天的record数据量是否是人数一致就可以判断出人是否齐了
+            recordNum = LitePal.where("date(date_string) == date('now')").find(Record.class).size();
+        } else if (signInOutMode == 2) {
+            //status 为1，2的数据量和人数一致则说明人齐了
+            recordNum = LitePal.where("date(date_string) == date('now') " +
+                    " and status > ?", "0").find(Record.class).size();
+        }
+        if (studentNum == recordNum) {
+            EventBusUtil.post(Constants.MESSAGE_TO_SERVICE, Constants.CLOSE_VOICE);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleMessage(MessageEvent messageEvent) {
+        if (messageEvent.getType() == 1) {
+            initView();
         }
     }
 
@@ -245,7 +287,7 @@ public class SignInOutFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        init();
+        initView();
     }
 
 //    @Override

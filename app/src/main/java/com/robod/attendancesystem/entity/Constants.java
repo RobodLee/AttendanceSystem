@@ -7,6 +7,51 @@ package com.robod.attendancesystem.entity;
 public class Constants {
 
     /**
+     * 签到成功
+     */
+    public static final String SIGN_IN_SUCCESS = "*1\r\n";
+
+    /**
+     * 签到失败
+     */
+    public static final String SIGN_IN_FAIL = "*2\r\n";
+
+    /**
+     * 签退成功
+     */
+    public static final String SIGN_OUT_SUCCESS = "*3\r\n";
+
+    /**
+     * 签退失败
+     */
+    public static final String SIGN_OUT_FAIL = "*4\r\n";
+
+    /**
+     * 开始签到
+     */
+    public static final String START_SIGN_IN = "#1\r\n";
+
+    /**
+     * 开始签退
+     */
+    public static final String START_SIGN_OUT = "#2\r\n";
+
+    /**
+     * 关闭语音
+     */
+    public static final String CLOSE_VOICE = "@1\r\n";
+
+    /**
+     * 发送给SignInOutFragment
+     */
+    public static final int MESSAGE_TO_FRAGMENT = 1;
+
+    /**
+     * 发送给MyService
+     */
+    public static final int MESSAGE_TO_SERVICE = 2;
+
+    /**
      * SharedPreferences中签到时间下标对应的键名称
      */
     public static final String SIGN_IN_TIME_KEY = "SING_IN_TIME_KEY";
@@ -56,4 +101,8 @@ public class Constants {
      */
     public static final String ACCESS_TOKEN = "24.9275f6ff756cbae96aebabf4f63cda47.2592000.1603959221.282335-22773965";
 
+    /**
+     * 蓝牙的地址
+     */
+    public static final String BLE_ADDRESS = "90:9A:77:2C:B1:FA";
 }

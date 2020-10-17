@@ -62,6 +62,7 @@ public class TodayRecordsAdapter extends ArrayAdapter<Student> {
         viewHolder.studentName.setText(student.getName());
         List<Record> records = null;
         if (signInOutMode == 1) {
+            //签到的时候判断签到/签退状态是否为0或1，是则说明已经签到过了，改成绿色
              records = LitePal.where("student_num = ? and " +
                     "date(date_string) == date('now') and " +
                     "status < ?",student.getNumber(),"2").find(Record.class);
@@ -69,6 +70,7 @@ public class TodayRecordsAdapter extends ArrayAdapter<Student> {
                 viewHolder.statusCircle.setTextColor(Color.GREEN);
             }
         } else if (signInOutMode == 2)  {
+            //签退的时候判断签到/签退状态是否为1，是则说明已经签退过了，改成绿色
             records = LitePal.where("student_num = ? and " +
                     "date(date_string) == date('now') and " +
                     "status = ?",student.getNumber(),"1").find(Record.class);
@@ -76,6 +78,7 @@ public class TodayRecordsAdapter extends ArrayAdapter<Student> {
                 viewHolder.statusCircle.setTextColor(Color.GREEN);
             }
         }
+        //没有签到或者签退的记录则判断是否请假了，请假则改为橙色
         if (records == null || records.size()==0) {
             records = LitePal.where("student_num = ? and " +
                     "date(date_string) == date('now') and " +
