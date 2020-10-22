@@ -22,7 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.navigation.NavigationView;
 import com.robod.attendancesystem.entity.Constants;
 import com.robod.attendancesystem.fragment.AttendanceDetailsFragment;
-import com.robod.attendancesystem.fragment.SignInOutFragment;
+import com.robod.attendancesystem.fragment.MarkFragment;
 import com.robod.attendancesystem.service.MyService;
 import com.robod.attendancesystem.utils.ToastUtil;
 
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         x.view().inject(this);
-        replaceFragment(new SignInOutFragment());
+        replaceFragment(new MarkFragment());
 
         init();
 
@@ -135,11 +135,11 @@ public class MainActivity extends AppCompatActivity {
         adminPasswordDialog.show();
     }
 
-    @Event(value = {R.id.sign_in_out_btn, R.id.attendance_details_btn})
+    @Event(value = {R.id.mark_fragment_btn, R.id.attendance_details_btn})
     private void myClick(View v) {
         switch (v.getId()) {
-            case R.id.sign_in_out_btn:
-                replaceFragment(new SignInOutFragment());
+            case R.id.mark_fragment_btn:
+                replaceFragment(new MarkFragment());
                 break;
             case R.id.attendance_details_btn:
                 replaceFragment(new AttendanceDetailsFragment());

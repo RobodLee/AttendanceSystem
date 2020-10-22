@@ -25,13 +25,13 @@
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/sign_in_out_btn"
+                android:id="@+id/mark_fragment_btn"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="40dp"
                 android:layout_marginRight="40dp"
                 android:layout_weight="1"
-                android:text="签到/签退" />
+                android:text="打卡" />
 
             <RadioButton
                 android:id="@+id/attendance_details_btn"

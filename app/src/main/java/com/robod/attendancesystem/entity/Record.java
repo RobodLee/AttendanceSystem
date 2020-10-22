@@ -16,7 +16,7 @@ public class Record extends LitePalSupport implements Serializable {
     private String date_string;    //日期字符串，yyyy-MM-dd
     private String sign_in_time;    //签到时间
     private String sign_out_time;   //签退时间
-    private String status;          //状态，0表示签到了但是没签退,1表示正常签到签退,2表示请假
+    private String status;          //状态，0表示签到了但是没签退,1表示正常签到签退
 
     public int getId() {
         return id;
