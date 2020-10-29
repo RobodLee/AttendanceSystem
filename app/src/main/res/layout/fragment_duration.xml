@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -11,7 +11,7 @@
         android:background="@color/colorPrimary">
 
         <TextView
-            android:id="@+id/attendance_details_date"
+            android:id="@+id/duration_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
@@ -36,18 +36,18 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="签到时间"/>
+            android:text="今日时长"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="签退时间"/>
+            android:text="本月时长"/>
     </LinearLayout>
 
     <ListView
-        android:id="@+id/attendance_details_list_view"
+        android:id="@+id/duration_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

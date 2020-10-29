@@ -21,7 +21,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 import com.robod.attendancesystem.entity.Constants;
-import com.robod.attendancesystem.fragment.AttendanceDetailsFragment;
+import com.robod.attendancesystem.fragment.DurationFragment;
 import com.robod.attendancesystem.fragment.MarkFragment;
 import com.robod.attendancesystem.service.MyService;
 import com.robod.attendancesystem.utils.ToastUtil;
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(new MarkFragment());
                 break;
             case R.id.attendance_details_btn:
-                replaceFragment(new AttendanceDetailsFragment());
+                replaceFragment(new DurationFragment());
             default:
         }
     }

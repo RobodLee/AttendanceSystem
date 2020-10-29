@@ -145,6 +145,7 @@ public class MarkFragment extends Fragment {
                             } else {
                                 sdf.applyPattern("HH:mm");
                                 record.setSign_out_time(sdf.format(calendar.getTime()));
+                                record.setDuration(getDuration(record));
                                 record.setStatus("1");
                                 ToastUtil.Pop(name + " 签退成功");
                             }
@@ -165,6 +166,20 @@ public class MarkFragment extends Fragment {
         TodayMarkAdapter adapter = new TodayMarkAdapter(getActivity(), R.layout.today_mark_item,
                 LitePal.findAll(Student.class));
         todayMarkLv.setAdapter(adapter);
+    }
+
+    //获取签退时间与签到时间相减后的结果
+    private int getDuration(Record record) {
+        String signInTime = record.getSign_in_time();
+        String[] signInArray = signInTime.split(":");
+        int signInHour = Integer.parseInt(signInArray[0]);
+        int signInMinute = Integer.parseInt(signInArray[1]);
+
+        String signOutTime = record.getSign_out_time();
+        String[] signOutArray = signOutTime.split(":");
+        int signOutHour = Integer.parseInt(signOutArray[0]);
+        int signOutMinute = Integer.parseInt(signOutArray[1]);
+        return (signOutHour * 60 + signOutMinute) - (signInHour * 60 + signInMinute);
     }
 
 }

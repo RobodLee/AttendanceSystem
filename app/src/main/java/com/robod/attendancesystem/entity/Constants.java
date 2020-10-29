@@ -99,7 +99,7 @@ public class Constants {
     /**
      * accessToken
      */
-    public static final String ACCESS_TOKEN = "24.9275f6ff756cbae96aebabf4f63cda47.2592000.1603959221.282335-22773965";
+    public static final String ACCESS_TOKEN = "24.06334a5de6bc7e389ae1635ab436ed08.2592000.1606553588.282335-22773965";
 
     /**
      * 蓝牙的地址

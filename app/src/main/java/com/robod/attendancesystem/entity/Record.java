@@ -16,6 +16,7 @@ public class Record extends LitePalSupport implements Serializable {
     private String date_string;    //日期字符串，yyyy-MM-dd
     private String sign_in_time;    //签到时间
     private String sign_out_time;   //签退时间
+    private int duration;           //时长，签退时间-签到时间
     private String status;          //状态，0表示签到了但是没签退,1表示正常签到签退
 
     public int getId() {
@@ -66,11 +67,33 @@ public class Record extends LitePalSupport implements Serializable {
         this.sign_out_time = sign_out_time;
     }
 
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Record{" +
+                "id=" + id +
+                ", student_name='" + student_name + '\'' +
+                ", student_num='" + student_num + '\'' +
+                ", date_string='" + date_string + '\'' +
+                ", sign_in_time='" + sign_in_time + '\'' +
+                ", sign_out_time='" + sign_out_time + '\'' +
+                ", duration=" + duration +
+                ", status='" + status + '\'' +
+                '}';
     }
 }
