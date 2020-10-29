@@ -1,5 +1,7 @@
 package com.robod.attendancesystem.utils;
 
+import com.robod.attendancesystem.MyApplication;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +24,7 @@ public class Base64Util {
     }
 
     public static String encode(File file) {
+        file = CompressHelper.getDefault(MyApplication.getContext()).compressToFile(file);
         byte[] from = file2byte(file);
         StringBuilder to = new StringBuilder((int) ((double) from.length * 1.34D) + 3);
         int num = 0;

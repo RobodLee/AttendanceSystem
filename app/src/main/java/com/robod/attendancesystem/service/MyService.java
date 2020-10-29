@@ -50,10 +50,16 @@ public class MyService extends Service {
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        EventBus.getDefault().register(this);   //注册事件
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         preferences = getSharedPreferences(Constants.SP_NAME,MODE_PRIVATE);
 
-        EventBus.getDefault().register(this);   //注册事件
+        //EventBus.getDefault().register(this);   //注册事件
         connectBLE();
         timeMonitor();
         return super.onStartCommand(intent, flags, startId);
